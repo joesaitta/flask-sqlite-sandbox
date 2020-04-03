@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+    <title>Document Similarity</title>
+  </head>
+
+  <body>
+    <h1>Document Similarity
+      <span class="spinner-grow text-primary" role="status" id="loadingDiv">
+      </span>
+    </h1>
+
+    <div id='Site Description'>
+    Load in the text of 2 documents. The word frequency and <a href ="https://en.wikipedia.org/wiki/Cosine_similarity">cosine similarity</a> (-1 to 1, -1 meaning opposing and 1 meaning the same) will be calculated.
+    </div>
+
+    <form class="w-75 p-3">
+      <div class="form-group">
+        <label for="textbox1">Document 1</label>
+        <textarea name="textbox1" placeholder="Input document 1 text here" id="textbox1" class="form-control" id="doc1"></textarea>
+        <span class="font-weight-light" id=cleaned_doc1>?</span>
+        <p><button class="btn btn-primary" type="button" id="clean_doc1">Clean Text</button>
+      </div>
+    </form>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+    <script type=text/javascript>
+      $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    </script>
+
+    <!-- DOCUMENT CLEANING FUNCTION -->
+    <script type=text/javascript>
+      $(function() {
+        $('#clean_doc1').bind('click', function() {
+          $.post($SCRIPT_ROOT + '/_clean_text', {
+            text: $('textarea[name="textbox1"]').val()
+          }, function(data) {
+            $("#cleaned_doc1").text(data.cleaned_doc);
+          });
+          return false;
+        });
+      });
+    </script>
+
+    <!-- SPINNER WHEN THERE'S AN AJAX CALL-->
+    <script type=text/javascript>
+      var $loading = $('#loadingDiv').hide();
+      $(document)
+        .ajaxStart(function () {
+          $loading.show();
+        })
+        .ajaxStop(function () {
+          $loading.hide();
+        });
+    </script>
+
+  </body>
+</html>
